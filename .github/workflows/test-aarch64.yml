@@ -34,7 +34,6 @@ jobs:
           - deepin_beige
           - deepin_crimson
           - openkylin
-          - revyos
           - opencloudos
 
     env:
