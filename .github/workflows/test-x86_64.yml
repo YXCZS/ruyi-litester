@@ -66,12 +66,27 @@ jobs:
             -e TEST_START_TIME \
             -e DISTRO_ID=${{ matrix.distro }} \
             -v "${PWD}/artifacts/${{ matrix.distro }}:/artifacts" \
+            --entrypoint /bin/sh \
             ruyi-litester:${{ matrix.distro }} \
-            tail -f /dev/null
-          # 3. 给这个容器安装ping（关键！补加的步骤）
-          docker exec ${{ matrix.distro }}-test yum install -y iputils-ping
+            -c "tail -f /dev/null"
+          # 3. 给这个容器安装 ping（检测常见包管理器）
+          docker exec -u root ${{ matrix.distro }}-test /bin/sh -c '
+            set -e
+            if command -v apt-get >/dev/null 2>&1; then
+              apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y iputils-ping
+            elif command -v dnf >/dev/null 2>&1; then
+              dnf install -y iputils
+            elif command -v yum >/dev/null 2>&1; then
+              yum install -y iputils
+            elif command -v pacman >/dev/null 2>&1; then
+              pacman -Sy --noconfirm iputils
+            else
+              echo "Unknown package manager, cannot install ping" >&2
+              exit 1
+            fi
+          '
           # 4. 执行测试脚本（和原来的测试逻辑一致）
-          docker exec ${{ matrix.distro }}-test /docker/test_run.sh
+          docker exec ${{ matrix.distro }}-test /ruyi-litester/docker/test_run.sh
           # 5. 测试完成后，停止并删除容器（清理环境）
           docker stop ${{ matrix.distro }}-test
           docker rm ${{ matrix.distro }}-test
