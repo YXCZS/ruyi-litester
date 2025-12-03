@@ -53,44 +53,18 @@ jobs:
       - name: Build test image for ${{ matrix.distro }}
         run: |
           docker build \
-          --network host \
           -f docker/distros/${{ matrix.distro }}.Dockerfile \
             -t ruyi-litester:${{ matrix.distro }} .
 
       - name: Run litester in Docker (${{ matrix.distro }})
         run: |
-          # 1. 创建测试产物存放目录（和原来一致）
           mkdir -p artifacts/${{ matrix.distro }}
-          # 2. 启动容器（后台运行，给容器起个名字方便后续操作；用一个长期运行的命令保证容器不退出）
-          docker run -d --network host --name ${{ matrix.distro }}-test \
+          docker run --rm \
             -e RUYI_VERSION \
             -e TEST_START_TIME \
             -e DISTRO_ID=${{ matrix.distro }} \
-            -v "${PWD}/artifacts/${{ matrix.distro }}:/artifacts" \
-            --entrypoint /bin/sh \
-            ruyi-litester:${{ matrix.distro }} \
-            -c "tail -f /dev/null"
-          # 3. 给这个容器安装 ping（检测常见包管理器）
-          docker exec -u root ${{ matrix.distro }}-test /bin/sh -c '
-            set -e
-            if command -v apt-get >/dev/null 2>&1; then
-              apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y iputils-ping
-            elif command -v dnf >/dev/null 2>&1; then
-              dnf install -y iputils
-            elif command -v yum >/dev/null 2>&1; then
-              yum install -y iputils
-            elif command -v pacman >/dev/null 2>&1; then
-              pacman -Sy --noconfirm iputils
-            else
-              echo "Unknown package manager, cannot install ping" >&2
-              exit 1
-            fi
-          '
-          # 4. 执行测试脚本（和原来的测试逻辑一致）
-          docker exec ${{ matrix.distro }}-test /ruyi-litester/docker/test_run.sh
-          # 5. 测试完成后，停止并删除容器（清理环境）
-          docker stop ${{ matrix.distro }}-test
-          docker rm ${{ matrix.distro }}-test
+            -v "$PWD/artifacts/${{ matrix.distro }}:/artifacts" \
+            ruyi-litester:${{ matrix.distro }}
 
       - name: Upload artifacts for ${{ matrix.distro }}
         uses: actions/upload-artifact@v4
@@ -98,4 +72,3 @@ jobs:
           name: ruyi-litester-${{ matrix.distro }}
           path: artifacts/${{ matrix.distro }}
           if-no-files-found: error
-
