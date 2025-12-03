@@ -69,11 +69,19 @@ debug_env() {
   echo "---- env (sorted) ----"
   env | sort
 
+  echo
   echo "---- network ----"
-  ping -4 github.com -c 5
-  ping -6 github.com -c 5
-  ping -4 wps.com -c 5
-  ping -6 wps.com -c 5
+  if command -v ping >/dev/null 2>&1; then
+    for host in github.com wps.com; do
+      echo "[DEBUG] ping -4 $host"
+      ping -4 "$host" -c 5 || echo "[WARN] ping -4 $host failed (exit=$?)"
+      echo "[DEBUG] ping -6 $host"
+      ping -6 "$host" -c 5 || echo "[WARN] ping -6 $host failed (exit=$?)"
+      echo
+    done
+  else
+    echo "ping command not found; skipping network connectivity checks"
+  fi
 
   echo "================= ENV DEBUG END ================="
   echo

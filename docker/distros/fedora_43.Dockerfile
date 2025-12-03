@@ -4,7 +4,7 @@ WORKDIR /ruyi-litester
 # RUN sed -e 's|^metalink=|#metalink=|g' -e 's|^#baseurl=http://download.example/pub/fedora/linux|baseurl=https://mirrors.ustc.edu.cn/fedora|g' -i.bak /etc/yum.repos.d/fedora.repo /etc/yum.repos.d/fedora-updates.repo
 
 
-RUN dnf install -y python3-lit llvm18 coreutils util-linux grep procps bash sudo git wget make zstd openssl jq glibc-locale-source python3-pip
+RUN dnf install -y python3-lit llvm18 coreutils util-linux grep procps bash sudo git wget make zstd openssl jq glibc-locale-source python3-pip iputils
 RUN pip install yq
 RUN echo 'LANG=en_US.UTF-8' > /etc/locale.conf
 
