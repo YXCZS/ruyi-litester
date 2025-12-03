@@ -53,6 +53,7 @@ jobs:
       - name: Build test image for ${{ matrix.distro }}
         run: |
           docker build \
+          --network host \
           -f docker/distros/${{ matrix.distro }}.Dockerfile \
             -t ruyi-litester:${{ matrix.distro }} .
 
@@ -61,7 +62,7 @@ jobs:
           # 1. 创建测试产物存放目录（和原来一致）
           mkdir -p artifacts/${{ matrix.distro }}
           # 2. 启动容器（后台运行，给容器起个名字方便后续操作；用一个长期运行的命令保证容器不退出）
-          docker run -d --name ${{ matrix.distro }}-test \
+          docker run -d --network host --name ${{ matrix.distro }}-test \
             -e RUYI_VERSION \
             -e TEST_START_TIME \
             -e DISTRO_ID=${{ matrix.distro }} \
