@@ -60,13 +60,14 @@ jobs:
         run: |
           # 1. 创建测试产物存放目录（和原来一致）
           mkdir -p artifacts/${{ matrix.distro }}
-          # 2. 启动容器（后台运行，给容器起个名字方便后续操作）
+          # 2. 启动容器（后台运行，给容器起个名字方便后续操作；用一个长期运行的命令保证容器不退出）
           docker run -d --name ${{ matrix.distro }}-test \
             -e RUYI_VERSION \
             -e TEST_START_TIME \
             -e DISTRO_ID=${{ matrix.distro }} \
             -v "${PWD}/artifacts/${{ matrix.distro }}:/artifacts" \
-            ruyi-litester:${{ matrix.distro }}
+            ruyi-litester:${{ matrix.distro }} \
+            tail -f /dev/null
           # 3. 给这个容器安装ping（关键！补加的步骤）
           docker exec ${{ matrix.distro }}-test yum install -y iputils-ping
           # 4. 执行测试脚本（和原来的测试逻辑一致）
