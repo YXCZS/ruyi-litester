@@ -58,13 +58,22 @@ jobs:
 
       - name: Run litester in Docker (${{ matrix.distro }})
         run: |
+          # 1. 创建测试产物存放目录（和原来一致）
           mkdir -p artifacts/${{ matrix.distro }}
-          docker run --rm \
+          # 2. 启动容器（后台运行，给容器起个名字方便后续操作）
+          docker run -d --name ${{ matrix.distro }}-test \
             -e RUYI_VERSION \
             -e TEST_START_TIME \
             -e DISTRO_ID=${{ matrix.distro }} \
-            -v "$PWD/artifacts/${{ matrix.distro }}:/artifacts" \
+            -v "${PWD}/artifacts/${{ matrix.distro }}:/artifacts" \
             ruyi-litester:${{ matrix.distro }}
+          # 3. 给这个容器安装ping（关键！补加的步骤）
+          docker exec ${{ matrix.distro }}-test yum install -y iputils-ping
+          # 4. 执行测试脚本（和原来的测试逻辑一致）
+          docker exec ${{ matrix.distro }}-test /docker/test_run.sh
+          # 5. 测试完成后，停止并删除容器（清理环境）
+          docker stop ${{ matrix.distro }}-test
+          docker rm ${{ matrix.distro }}-test
 
       - name: Upload artifacts for ${{ matrix.distro }}
         uses: actions/upload-artifact@v4
