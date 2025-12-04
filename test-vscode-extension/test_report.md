@@ -12,5 +12,13 @@
 - 从仓库页面下载最新构建的压缩包，解压获得 `ruyisdk-vscode-extension-<version>.vsix`          通过
 - 在 VS Code 中执行 “Install from VSIX…”，确认安装成功                                        通过
 - 期望结果：扩展安装完成且在扩展视图可见；无报错弹窗                                          通过
-![安装步骤](images/1.png)
- 
+![ ](images/1.png)
+
+## 1. Ruyi 包管理器版本管理与引导安装
+- 步骤：
+    1. 启动 VS Code
+- 期望结果：
+    - 在未安装 Ruyi 包管理器时，出现“Ruyi not found”的提示，并且能够正常安装             <font color=red>不通过</font>
+    - 在安装多版本 Ruyi 包管理器时，可以自由切换版本                                    
+![ ](images/2.png)
+
