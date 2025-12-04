@@ -12,5 +12,5 @@
 - 从仓库页面下载最新构建的压缩包，解压获得 `ruyisdk-vscode-extension-<version>.vsix`          通过
 - 在 VS Code 中执行 “Install from VSIX…”，确认安装成功                                        通过
 - 期望结果：扩展安装完成且在扩展视图可见；无报错弹窗                                          通过
-!(images/1.png)
+![安装步骤](images/1.png)
  
