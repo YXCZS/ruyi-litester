@@ -164,11 +164,13 @@
 
 ![解压操作](images/17.png)
 
+解压结果
+
 ![解压结果](images/18.png)
 
 结合已创建的虚拟环境与所选 toolchain 进行编译
 
-> **测试依据：** 官方文档Milkv Duo：使用 riscv64-unknown-linux-musl-bin 工具链编译、运行、调试
+**测试案例：** 官方文档Milkv Duo：使用 riscv64-unknown-linux-musl-bin 工具链编译、运行、调试
 
 **测试步骤：**
 
@@ -182,17 +184,17 @@
 
 3. **Makefile 配置：** 设置 toolchain 等参数-通过
 
-   > **注意：** 与测试流程中不同，这里需要修改 Makefile，设置 toolchain 等参数
+   与测试流程中的样例不同，这里需要修改 Makefile，设置 toolchain 等参数
 
    ![Makefile 配置](images/23.png)
 
-4. **编译结果：** 生成产物 `helloworld`-通过
+4. **编译结果：** 编译后生成产物 `helloworld`-通过
 
    ![编译成功](images/21.png)
 
 5. **运行测试：** 使用 qemu 模拟器运行 RISC-V64 架构产物并运行-通过
 
-   ![QEMU 运行](images/24.png)
+   ![产物架构](images/24.png)
 
    ![运行结果](images/22.png)
 
