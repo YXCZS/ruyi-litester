@@ -1,0 +1,29 @@
+[config]
+profile = "milkv-duo"
+sysroot = "/home/yxc/work/ruyi-litester/test-vscode-extension/myhone-venv/sysroot"
+
+[metadata]
+version = 1
+
+
+
+
+[metadata.packages.sysroot]
+repo_id = "ruyisdk"
+category = "toolchain"
+name = "gnu-milkv-milkv-duo-musl-bin"
+version = "0.20240731.0+git.67688c7335e7"
+
+
+
+
+
+
+
+[metadata.packages.toolchain."riscv64-unknown-linux-musl"]
+repo_id = "ruyisdk"
+category = "toolchain"
+name = "gnu-milkv-milkv-duo-musl-bin"
+version = "0.20240731.0+git.67688c7335e7"
+
+

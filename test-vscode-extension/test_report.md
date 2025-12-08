@@ -79,7 +79,14 @@
 - 覆盖点：通过包管理器解压模板；结合虚拟环境与 toolchain 进行编译
 - 期望：模板解压成功且结构正确；选择虚拟环境后可完成编译并生成产物
 - 结果：
-  - 
+  - 通过 Ruyi 包管理器解压已有项目模板(这里初步尝试下载了coremark用于测试解压)-通过
+![ ](images/17.png)
+![ ](images/18.png)
+  - 结合已创建的虚拟环境与所选 toolchain 进行编译(这里采用了官方文档中的“Milkv Duo ：使用 riscv64-unknown-linux-musl-bin 工具链编译、运行、调试”进行测试)-通过
+![ ](images/19.png)
+  - 这里环境选择milkv duo
+  - 解压后目录如下
+![ ](images/20.png)
 ### 6. 插件设置
 - 入口：Extensions 页面选择 RuyiSDK 后进入 settings
 - 期望：每个项目可用并如期运行

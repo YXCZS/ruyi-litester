@@ -1,0 +1,99 @@
+# NOTE: This file is managed by ruyi. DO NOT EDIT!
+
+[cached_v2]
+
+
+[cached_v2.targets.riscv64-unknown-linux-musl]
+toolchain_bindir = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin"
+toolchain_flags = "-mcpu=c906 -march=rv64gc -mabi=lp64d"
+toolchain_sysroot = "/home/yxc/work/ruyi-litester/test-vscode-extension/myhone-venv/sysroot.riscv64-unknown-linux-musl"
+
+
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-gdb-add-index"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-gdb-add-index"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-addr2line"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-addr2line"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-gcov"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-gcov"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-gcov-tool"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-gcov-tool"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-nm"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-nm"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-strings"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-strings"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-cpp"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-cpp"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-gdb"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-gdb"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-ranlib"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-ranlib"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-gcov-dump"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-gcov-dump"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-ar"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-ar"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-readelf"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-readelf"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-gcc-ar"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-gcc-ar"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-elfedit"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-elfedit"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-ld"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-ld"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-gprof"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-gprof"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-ld.bfd"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-ld.bfd"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-as"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-as"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-lto-dump"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-lto-dump"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-c++filt"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-c++filt"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-objcopy"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-objcopy"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-gcc"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-gcc"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-gcc-ranlib"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-gcc-ranlib"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-c++"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-c++"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-strip"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-strip"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-objdump"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-objdump"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-size"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-size"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-gcc-nm"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-gcc-nm"
+target_tuple = "riscv64-unknown-linux-musl"
+[cached_v2.cmd_metadata_map."riscv64-unknown-linux-musl-g++"]
+dest = "/home/yxc/snap/code/215/.local/share/ruyi/binaries/x86_64/gnu-milkv-milkv-duo-musl-bin-0.20240731.0+git.67688c7335e7/bin/riscv64-unknown-linux-musl-g++"
+target_tuple = "riscv64-unknown-linux-musl"
+
