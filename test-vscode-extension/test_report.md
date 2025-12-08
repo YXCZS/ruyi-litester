@@ -80,13 +80,20 @@
 - 期望：模板解压成功且结构正确；选择虚拟环境后可完成编译并生成产物
 - 结果：
   - 通过 Ruyi 包管理器解压已有项目模板(这里初步尝试下载了coremark用于测试解压)-通过
-![ ](images/17.png)
-![ ](images/18.png)
-  - 结合已创建的虚拟环境与所选 toolchain 进行编译(这里采用了官方文档中的“Milkv Duo ：使用 riscv64-unknown-linux-musl-bin 工具链编译、运行、调试”进行测试)-通过
-![ ](images/19.png)
-  - 这里环境选择milkv duo
-  - 解压后目录如下
-![ ](images/20.png)
+![ ](images/17.png)  
+![ ](images/18.png)  
+  - 结合已创建的虚拟环境与所选 toolchain 进行编译(这里采用了官方文档中的“Milkv Duo ：使用 riscv64-unknown-linux-musl-bin 工具链编译、运行、调试”进行测试)-通过  
+![ ](images/19.png)  
+    - 这里环境选择milkv duo  
+    - 下载应用示例 duo-examples ，解压后目录如下  
+![ ](images/20.png)  
+    - 与测试流程中不同，这里需要修改Makefile，设置toolchain等参数   
+![ ](images/23.png)  
+    - 编译后成功生成产物helloworld  
+![ ](images/21.png)   
+    - 使用qemu模拟器运行RISCV64架构产物并运行成功   
+![ ](images/24.png)  
+![ ](images/22.png)  
 ### 6. 插件设置
 - 入口：Extensions 页面选择 RuyiSDK 后进入 settings
 - 期望：每个项目可用并如期运行
