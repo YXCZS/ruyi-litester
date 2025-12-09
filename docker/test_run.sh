@@ -11,11 +11,9 @@ free_space() {
   echo "---- disk usage before cleanup ----"
   df -h /
 
-  # Remove large preinstalled SDKs to reclaim space on GitHub runners
-  sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/powershell || true
-
-  # Clean caches and previous temp data
-  sudo rm -rf "$TMPDIR" /tmp/rit-* /tmp/ruyi-* ~/.cache/ruyi ~/.cache/pip ~/.npm || true
+  # Only clean logs to reclaim some space, leave SDKs/caches intact
+  sudo rm -rf /home/runner/actions-runner/_diag/*.log || true
+  sudo rm -rf /home/runner/work/_temp || true
   mkdir -p "$TMPDIR"
 
   echo "---- disk usage after cleanup ----"
