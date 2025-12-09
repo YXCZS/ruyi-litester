@@ -71,8 +71,7 @@ python -m uvicorn packages_api.app:app --host 0.0.0.0 --port 8000
 - API 文档：http://127.0.0.1:8000/docs
 - 健康检查：http://127.0.0.1:8000/health
 
-截图位置 5：服务启动后的终端输出
-
+![效果](images/3.png)
 ---
 
 ## API 接口文档
