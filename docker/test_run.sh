@@ -71,17 +71,76 @@ debug_env() {
 
   echo
   echo "---- network ----"
-  if command -v ping >/dev/null 2>&1; then
-    for host in github.com wps.com; do
-      echo "[DEBUG] ping -4 $host"
-      ping -4 "$host" -c 5 || echo "[WARN] ping -4 $host failed (exit=$?)"
-      echo "[DEBUG] ping -6 $host"
-      ping -6 "$host" -c 5 || echo "[WARN] ping -6 $host failed (exit=$?)"
-      echo
-    done
-  else
-    echo "ping command not found; skipping network connectivity checks"
-  fi
+  # TCP ping function using netcat or bash /dev/tcp
+  tcp_ping() {
+    local host=$1
+    local port=$2
+    local ip_version=$3  # 4 for IPv4, 6 for IPv6
+    local timeout=${4:-3}
+    
+    # Try netcat first
+    if command -v nc >/dev/null 2>&1; then
+      local nc_opts="-zv -w $timeout"
+      if [ "$ip_version" = "6" ]; then
+        nc_opts="-6 $nc_opts"
+      else
+        nc_opts="-4 $nc_opts"
+      fi
+      if timeout "$timeout" nc $nc_opts "$host" "$port" 2>&1 | grep -q "succeeded\|open"; then
+        return 0
+      fi
+    fi
+    
+    # Fallback to bash /dev/tcp (works in bash)
+    # Note: bash /dev/tcp uses DNS resolution, so we can't force IPv4/IPv6 directly
+    # But we can try to resolve the IP first and use that
+    if [ -n "${BASH_VERSION:-}" ]; then
+      if timeout "$timeout" bash -c "echo > /dev/tcp/$host/$port" 2>/dev/null; then
+        return 0
+      fi
+    fi
+    
+    return 1
+  }
+  
+  for host in github.com wps.com; do
+    # Test IPv4 with TCP ping (port 443)
+    echo "[DEBUG] TCP ping -4 $host:443"
+    if tcp_ping "$host" 443 4; then
+      echo "[OK] TCP ping -4 $host:443 succeeded"
+    else
+      echo "[WARN] TCP ping -4 $host:443 failed (exit=$?)"
+    fi
+    
+    # Test IPv6 with TCP ping (port 443)
+    echo "[DEBUG] TCP ping -6 $host:443"
+    if tcp_ping "$host" 443 6; then
+      echo "[OK] TCP ping -6 $host:443 succeeded"
+    else
+      echo "[WARN] TCP ping -6 $host:443 failed (exit=$?)"
+    fi
+    
+    # Test IPv4 with curl
+    if command -v curl >/dev/null 2>&1; then
+      echo "[DEBUG] curl -4 $host"
+      if curl -4 -sSf --connect-timeout 3 --max-time 5 "https://$host" >/dev/null 2>&1; then
+        echo "[OK] curl -4 $host succeeded"
+      else
+        echo "[WARN] curl -4 $host failed (exit=$?)"
+      fi
+    fi
+    
+    # Test IPv6 with curl
+    if command -v curl >/dev/null 2>&1; then
+      echo "[DEBUG] curl -6 $host"
+      if curl -6 -sSf --connect-timeout 3 --max-time 5 "https://$host" >/dev/null 2>&1; then
+        echo "[OK] curl -6 $host succeeded"
+      else
+        echo "[WARN] curl -6 $host failed (exit=$?)"
+      fi
+    fi
+    echo
+  done
 
   echo "================= ENV DEBUG END ================="
   echo
@@ -108,4 +167,5 @@ rm -f *.md
 sudo mv ruyi-test-logs.tar.gz /artifacts/ruyi-test-${DISTRO_ID}-logs.tar.gz
 sudo mv ruyi-test-logs_failed.tar.gz /artifacts/ruyi-test-${DISTRO_ID}-logs_failed.tar.gz
 sudo mv ruyi_report/*.md /artifacts/
+
 
