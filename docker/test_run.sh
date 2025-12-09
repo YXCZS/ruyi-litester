@@ -80,23 +80,36 @@ debug_env() {
     
     # Try netcat first
     if command -v nc >/dev/null 2>&1; then
-      local nc_opts="-zv -w $timeout"
+      local nc_output
       if [ "$ip_version" = "6" ]; then
-        nc_opts="-6 $nc_opts"
+        if command -v timeout >/dev/null 2>&1; then
+          nc_output=$(timeout "$timeout" nc -6 -zv -w "$timeout" "$host" "$port" 2>&1) || true
+        else
+          nc_output=$(nc -6 -zv -w "$timeout" "$host" "$port" 2>&1) || true
+        fi
       else
-        nc_opts="-4 $nc_opts"
+        if command -v timeout >/dev/null 2>&1; then
+          nc_output=$(timeout "$timeout" nc -4 -zv -w "$timeout" "$host" "$port" 2>&1) || true
+        else
+          nc_output=$(nc -4 -zv -w "$timeout" "$host" "$port" 2>&1) || true
+        fi
       fi
-      if timeout "$timeout" nc $nc_opts "$host" "$port" 2>&1 | grep -q "succeeded\|open"; then
+      if echo "$nc_output" | grep -q "succeeded\|open"; then
         return 0
       fi
     fi
     
     # Fallback to bash /dev/tcp (works in bash)
     # Note: bash /dev/tcp uses DNS resolution, so we can't force IPv4/IPv6 directly
-    # But we can try to resolve the IP first and use that
     if [ -n "${BASH_VERSION:-}" ]; then
-      if timeout "$timeout" bash -c "echo > /dev/tcp/$host/$port" 2>/dev/null; then
-        return 0
+      if command -v timeout >/dev/null 2>&1; then
+        if timeout "$timeout" bash -c "echo > /dev/tcp/$host/$port" 2>/dev/null; then
+          return 0
+        fi
+      else
+        if bash -c "echo > /dev/tcp/$host/$port" 2>/dev/null; then
+          return 0
+        fi
       fi
     fi
     
@@ -167,5 +180,4 @@ rm -f *.md
 sudo mv ruyi-test-logs.tar.gz /artifacts/ruyi-test-${DISTRO_ID}-logs.tar.gz
 sudo mv ruyi-test-logs_failed.tar.gz /artifacts/ruyi-test-${DISTRO_ID}-logs_failed.tar.gz
 sudo mv ruyi_report/*.md /artifacts/
-
 
