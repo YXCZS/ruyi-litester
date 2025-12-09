@@ -13,7 +13,7 @@ RUN mkdir -p /etc/portage/binrepos.conf && printf '%s\n' '[gentoobinhost]' 'prio
 RUN echo 'FEATURES="${FEATURES} getbinpkg"'  >> /etc/portage/make.conf && echo 'FEATURES="${FEATURES} binpkg-request-signature"' >> /etc/portage/make.conf && getuto
 # j6 8G 内存会被 oom kill
 RUN emerge --color=n --getbinpkg --noreplace --autounmask=y llvm-core/llvm
-RUN emerge --color=n --getbinpkg --noreplace --autounmask=y dev-python/lit coreutils util-linux grep procps bash sudo wget make app-arch/zstd openssl net-analyzer/tcping
+RUN emerge --color=n --getbinpkg --noreplace --autounmask=y dev-python/lit coreutils util-linux grep procps bash sudo wget make app-arch/zstd openssl net-analyzer/netcat
 RUN emerge --color=n --getbinpkg --noreplace --autounmask=y app-admin/sudo sys-apps/file dev-tcltk/expect dev-vcs/git dev-build/make app-arch/tar app-misc/jq app-misc/yq
 
 FROM builder
