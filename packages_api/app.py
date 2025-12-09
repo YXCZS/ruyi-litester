@@ -227,7 +227,7 @@ async def list_kinds() -> JSONResponse:
 
 @app.get("/kinds/{kind}/packages", description="查看指定分类下的所有包名。返回该分类下所有包的名称列表。")
 async def list_packages_by_kind(
-    kind: str = Path(description="包的分类，例如 toolchain、analyzer 等"),
+    kind: str = Path(..., description="包的分类，例如 toolchain、analyzer 等"),
 ) -> JSONResponse:
     manifests = await index.get_all()
     packages = sorted({m.name for m in manifests if m.kind == kind})
@@ -266,8 +266,8 @@ async def list_packages(
 
 @app.get("/packages/{kind}/{name}", description="查看指定包的所有可用版本。返回该包的所有版本列表，包括版本号、描述和供应商信息。")
 async def list_versions(
-    kind: str = Path(description="包的分类，例如 toolchain、analyzer 等"),
-    name: str = Path(description="包的名称"),
+    kind: str = Path(..., description="包的分类，例如 toolchain、analyzer 等"),
+    name: str = Path(..., description="包的名称"),
 ) -> JSONResponse:
     manifests = await index.get_all()
     versions = [
@@ -324,9 +324,9 @@ def _summarize_manifest(m: PackageManifest) -> Dict:
 
 @app.get("/packages/{kind}/{name}/{version}", description="获取指定包的指定版本的完整 manifest 信息。包括元数据、分发文件、校验和、二进制信息、工具链信息等所有详细信息。")
 async def get_manifest(
-    kind: str = Path(description="包的分类，例如 toolchain、analyzer 等"),
-    name: str = Path(description="包的名称"),
-    version: str = Path(description="包的版本号"),
+    kind: str = Path(..., description="包的分类，例如 toolchain、analyzer 等"),
+    name: str = Path(..., description="包的名称"),
+    version: str = Path(..., description="包的版本号"),
 ) -> JSONResponse:
     manifests = await index.get_all()
     for m in manifests:
