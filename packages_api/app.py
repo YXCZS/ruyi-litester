@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 import httpx
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Path
 from fastapi.responses import JSONResponse, Response
 
 try:  # Python 3.11+
@@ -213,15 +213,15 @@ def _json_response(payload, pretty: bool = True, status_code: int = 200) -> Resp
     return Response(content=body, media_type="application/json", status_code=status_code)
 
 
-@app.get("/health")
+@app.get("/health", description="健康检查接口，用于检查服务是否正常运行")
 async def health() -> dict:
     return {"status": "ok"}
 
 
-@app.get("/packages")
+@app.get("/packages", description="列出所有包，支持关键词搜索和按分类过滤。可以搜索包名或描述中包含指定关键词的包，也可以按分类（如 toolchain、analyzer 等）进行过滤。")
 async def list_packages(
-    q: Optional[str] = Query(default=None, description="Substring to match name or desc"),
-    kind: Optional[str] = Query(default=None, description="Filter by manifest kind (e.g. analyzer)"),
+    q: Optional[str] = Query(default=None, description="关键词：在包名或描述中搜索包含此关键词的包"),
+    kind: Optional[str] = Query(default=None, description="分类过滤：按包的分类进行过滤，例如 toolchain、analyzer、board-image 等"),
 ) -> JSONResponse:
     manifests = await index.get_all()
     results = []
@@ -246,10 +246,10 @@ async def list_packages(
     return _json_response(results)
 
 
-@app.get("/packages/{kind}/{name}")
+@app.get("/packages/{kind}/{name}", description="查看指定包的所有可用版本。返回该包的所有版本列表，包括版本号、描述和供应商信息。")
 async def list_versions(
-    kind: str,
-    name: str,
+    kind: str = Path(description="包的分类，例如 toolchain、analyzer 等"),
+    name: str = Path(description="包的名称"),
 ) -> JSONResponse:
     manifests = await index.get_all()
     versions = [
@@ -304,11 +304,11 @@ def _summarize_manifest(m: PackageManifest) -> Dict:
     }
 
 
-@app.get("/packages/{kind}/{name}/{version}")
+@app.get("/packages/{kind}/{name}/{version}", description="获取指定包的指定版本的完整 manifest 信息。包括元数据、分发文件、校验和、二进制信息、工具链信息等所有详细信息。")
 async def get_manifest(
-    kind: str,
-    name: str,
-    version: str,
+    kind: str = Path(description="包的分类，例如 toolchain、analyzer 等"),
+    name: str = Path(description="包的名称"),
+    version: str = Path(description="包的版本号"),
 ) -> JSONResponse:
     manifests = await index.get_all()
     for m in manifests:
@@ -317,16 +317,16 @@ async def get_manifest(
     raise HTTPException(status_code=404, detail="Manifest not found")
 
 
-@app.get("/kinds")
+@app.get("/kinds", description="列出所有可用的包分类。返回所有不同的包分类列表，例如 toolchain、analyzer、board-image 等。")
 async def list_kinds() -> JSONResponse:
     manifests = await index.get_all()
     kinds = sorted({m.kind for m in manifests})
     return _json_response(kinds)
 
 
-@app.get("/kinds/{kind}/packages")
+@app.get("/kinds/{kind}/packages", description="查看指定分类下的所有包名。返回该分类下所有包的名称列表。")
 async def list_packages_by_kind(
-    kind: str,
+    kind: str = Path(description="包的分类，例如 toolchain、analyzer 等"),
 ) -> JSONResponse:
     manifests = await index.get_all()
     packages = sorted({m.name for m in manifests if m.kind == kind})
