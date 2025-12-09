@@ -236,13 +236,13 @@ async def list_packages_by_kind(
     return _json_response(packages)
 
 
-@app.get("/packages", description="列出所有包，支持关键词搜索和按分类过滤。可以搜索包名或描述中包含指定关键词的包，也可以按分类（如 toolchain、analyzer 等）进行过滤。返回去重后的包名列表。")
+@app.get("/packages", description="列出所有包，支持关键词搜索和按分类过滤。可以搜索包名或描述中包含指定关键词的包，也可以按分类（如 toolchain、analyzer 等）进行过滤。返回去重后的包名列表，每个包包含分类和名称。")
 async def list_packages(
     q: Optional[str] = Query(default=None, description="关键词：在包名或描述中搜索包含此关键词的包"),
     kind: Optional[str] = Query(default=None, description="分类过滤：按包的分类进行过滤，例如 toolchain、analyzer、board-image 等"),
 ) -> JSONResponse:
     manifests = await index.get_all()
-    package_names = set()
+    packages = set()
     for m in manifests:
         if kind and m.kind != kind:
             continue
@@ -250,8 +250,9 @@ async def list_packages(
             needle = q.lower()
             if needle not in m.name.lower() and needle not in m.metadata.get("desc", "").lower():
                 continue
-        package_names.add(m.name)
-    return _json_response(sorted(package_names))
+        packages.add((m.kind, m.name))
+    results = [{"kind": k, "name": n} for k, n in sorted(packages)]
+    return _json_response(results)
 
 
 @app.get("/packages/{kind}/{name}", description="查看指定包的所有可用版本。返回该包的所有版本列表，包括版本号、描述和供应商信息。")
