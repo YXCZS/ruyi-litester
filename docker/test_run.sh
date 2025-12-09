@@ -71,49 +71,34 @@ debug_env() {
 
   echo
   echo "---- network ----"
-  tcp_ping() {
-    local host=$1
-    local port=$2
-    local ip_version=$3  # 4 or 6
-    local timeout=${4:-3}
+  if ! command -v tcping >/dev/null 2>&1; then
+    echo "[WARN] tcping not installed; skip network check"
+  else
+    tcp_ping() {
+      local host=$1 port=$2 ip_version=$3  # 4 or 6
+      local timeout=${4:-3}
+      local ip_flag="-4"
+      [ "$ip_version" = "6" ] && ip_flag="-6"
+      timeout "$timeout" tcping $ip_flag -q -t 1 -i 1 -n 1 "$host" "$port" >/dev/null 2>&1
+    }
 
-    if command -v nc >/dev/null 2>&1; then
-      local nc_output
-      if [ "$ip_version" = "6" ]; then
-        nc_output=$(timeout "$timeout" nc -6 -zv -w "$timeout" "$host" "$port" 2>&1) || true
+    for host in github.com wps.com; do
+      echo "[DEBUG] tcping -4 $host:443"
+      if tcp_ping "$host" 443 4; then
+        echo "[OK] tcping -4 $host:443 succeeded"
       else
-        nc_output=$(timeout "$timeout" nc -4 -zv -w "$timeout" "$host" "$port" 2>&1) || true
+        echo "[WARN] tcping -4 $host:443 failed (exit=$?)"
       fi
-      if echo "$nc_output" | grep -q "succeeded\|open"; then
-        return 0
+
+      echo "[DEBUG] tcping -6 $host:443"
+      if tcp_ping "$host" 443 6; then
+        echo "[OK] tcping -6 $host:443 succeeded"
+      else
+        echo "[WARN] tcping -6 $host:443 failed (exit=$?)"
       fi
-    fi
-
-    # fallback /dev/tcp (cannot force v4/v6; best effort)
-    if [ -n "${BASH_VERSION:-}" ]; then
-      if timeout "$timeout" bash -c "echo > /dev/tcp/$host/$port" 2>/dev/null; then
-        return 0
-      fi
-    fi
-    return 1
-  }
-
-  for host in github.com wps.com; do
-    echo "[DEBUG] TCP ping -4 $host:443"
-    if tcp_ping "$host" 443 4; then
-      echo "[OK] TCP ping -4 $host:443 succeeded"
-    else
-      echo "[WARN] TCP ping -4 $host:443 failed (exit=$?)"
-    fi
-
-    echo "[DEBUG] TCP ping -6 $host:443"
-    if tcp_ping "$host" 443 6; then
-      echo "[OK] TCP ping -6 $host:443 succeeded"
-    else
-      echo "[WARN] TCP ping -6 $host:443 failed (exit=$?)"
-    fi
-    echo
-  done
+      echo
+    done
+  fi
 
   echo "================= ENV DEBUG END ================="
   echo
