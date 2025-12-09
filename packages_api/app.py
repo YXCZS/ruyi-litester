@@ -22,7 +22,7 @@ import tempfile
 import tarfile
 from dataclasses import dataclass
 import json
-from pathlib import Path
+from pathlib import Path as PathLib
 from typing import Dict, List, Optional
 
 import httpx
@@ -114,7 +114,7 @@ class PackagesIndex:
                         
                         # 找到解压后的根目录（通常是 packages-index-<hash>）
                         extracted_root = None
-                        for item in Path(tmp_dir).iterdir():
+                        for item in PathLib(tmp_dir).iterdir():
                             if item.is_dir() and "packages-index" in item.name:
                                 extracted_root = item
                                 break
