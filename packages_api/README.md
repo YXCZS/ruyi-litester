@@ -20,10 +20,6 @@ Packages Index API 是基于 Python 和 FastAPI 的 REST API 服务，用于查�
 - 关键词搜索：在包名和描述中模糊搜索
 - 版本查看：查看指定包的所有版本
 - 详细信息：获取包的完整 manifest 信息
-- 实时数据：从 GitHub 实时拉取最新数据
-- 智能缓存：10 分钟内存缓存
-
-截图位置 1：项目 GitHub 仓库首页
 
 ---
 
@@ -34,8 +30,7 @@ Packages Index API 是基于 Python 和 FastAPI 的 REST API 服务，用于查�
 - httpx (0.27.2) - 异步 HTTP 客户端
 - tomli (2.0.1) - TOML 解析库
 
-截图位置 2：requirements.txt 文件内容
-
+![技术栈](images/1.png)
 ---
 
 ## 项目结构
@@ -48,8 +43,6 @@ packages_api/
 └── DOCUMENTATION.md   # 本文档
 ```
 
-截图位置 3：项目目录结构
-
 ---
 
 ## 快速开始
@@ -61,8 +54,7 @@ cd packages_api
 bash start.sh
 ```
 
-截图位置 4：运行 start.sh 的终端输出
-
+![启动脚本](images/2.png)
 ### 手动启动
 
 Linux/macOS:
