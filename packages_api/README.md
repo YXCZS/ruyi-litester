@@ -237,11 +237,6 @@ curl http://127.0.0.1:8000/packages/toolchain/gnu-milkv-milkv-duo-elf-bin/0.2024
   "emulator": {...}
 }
 ```
-
-截图位置 6：Swagger UI 文档页面（http://127.0.0.1:8000/docs）
-
-截图位置 7：在 Swagger UI 中测试接口的请求和响应
-
 ---
 
 ## 注意事项
@@ -258,23 +253,5 @@ curl http://127.0.0.1:8000/packages/toolchain/gnu-milkv-milkv-duo-elf-bin/0.2024
 ```bash
 # Linux/macOS
 export GITHUB_TOKEN=your_token_here
-
-### 缓存策略
-
-- 默认缓存时间为 10 分钟
-- 缓存存储在内存中，服务重启后需要重新加载
-- 如需立即获取最新数据，重启服务即可
-
-### 错误处理
-
-- GitHub API 返回错误时，服务返回 502 状态码
-- 详细错误信息包含在响应中
-
-截图位置 10：接口返回的完整 JSON 数据
-
-截图位置 11：设置 GITHUB_TOKEN 后服务启动的提示信息
-
-截图位置 12：GitHub 仓库页面（如果已发布）
-
 ---
 
