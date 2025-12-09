@@ -218,6 +218,24 @@ async def health() -> dict:
     return {"status": "ok"}
 
 
+@app.get("/kinds", description="列出所有可用的包分类。返回所有不同的包分类列表，例如 toolchain、analyzer、board-image 等。")
+async def list_kinds() -> JSONResponse:
+    manifests = await index.get_all()
+    kinds = sorted({m.kind for m in manifests})
+    return _json_response(kinds)
+
+
+@app.get("/kinds/{kind}/packages", description="查看指定分类下的所有包名。返回该分类下所有包的名称列表。")
+async def list_packages_by_kind(
+    kind: str = Path(description="包的分类，例如 toolchain、analyzer 等"),
+) -> JSONResponse:
+    manifests = await index.get_all()
+    packages = sorted({m.name for m in manifests if m.kind == kind})
+    if not packages:
+        raise HTTPException(status_code=404, detail="Kind not found or no packages")
+    return _json_response(packages)
+
+
 @app.get("/packages", description="列出所有包，支持关键词搜索和按分类过滤。可以搜索包名或描述中包含指定关键词的包，也可以按分类（如 toolchain、analyzer 等）进行过滤。")
 async def list_packages(
     q: Optional[str] = Query(default=None, description="关键词：在包名或描述中搜索包含此关键词的包"),
@@ -315,24 +333,6 @@ async def get_manifest(
         if m.kind == kind and m.name == name and m.version == version:
             return _json_response(_summarize_manifest(m))
     raise HTTPException(status_code=404, detail="Manifest not found")
-
-
-@app.get("/kinds", description="列出所有可用的包分类。返回所有不同的包分类列表，例如 toolchain、analyzer、board-image 等。")
-async def list_kinds() -> JSONResponse:
-    manifests = await index.get_all()
-    kinds = sorted({m.kind for m in manifests})
-    return _json_response(kinds)
-
-
-@app.get("/kinds/{kind}/packages", description="查看指定分类下的所有包名。返回该分类下所有包的名称列表。")
-async def list_packages_by_kind(
-    kind: str = Path(description="包的分类，例如 toolchain、analyzer 等"),
-) -> JSONResponse:
-    manifests = await index.get_all()
-    packages = sorted({m.name for m in manifests if m.kind == kind})
-    if not packages:
-        raise HTTPException(status_code=404, detail="Kind not found or no packages")
-    return _json_response(packages)
 
 
 if __name__ == "__main__":  # pragma: no cover
