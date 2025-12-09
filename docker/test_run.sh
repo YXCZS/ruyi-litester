@@ -146,10 +146,29 @@ debug_env() {
     # Test IPv6 with curl
     if command -v curl >/dev/null 2>&1; then
       echo "[DEBUG] curl -6 $host"
-      if curl -6 -sSf --connect-timeout 3 --max-time 5 "https://$host" >/dev/null 2>&1; then
-        echo "[OK] curl -6 $host succeeded"
+      # Try to resolve IPv6 address first
+      ipv6_addr=""
+      if command -v getent >/dev/null 2>&1; then
+        ipv6_addr=$(getent aaaa "$host" 2>/dev/null | head -n1 | awk '{print $1}') || true
+      elif command -v host >/dev/null 2>&1; then
+        ipv6_addr=$(host -t AAAA "$host" 2>/dev/null | grep "has IPv6 address" | awk '{print $NF}') || true
+      fi
+      
+      if [ -n "$ipv6_addr" ]; then
+        # Use IPv6 address directly
+        if curl -6 -sSf --connect-timeout 3 --max-time 5 "https://[$ipv6_addr]" >/dev/null 2>&1; then
+          echo "[OK] curl -6 $host succeeded (via $ipv6_addr)"
+        else
+          echo "[WARN] curl -6 $host failed (exit=$?)"
+        fi
       else
-        echo "[WARN] curl -6 $host failed (exit=$?)"
+        # Try with hostname (may fail if IPv6 DNS is not available)
+        if curl -6 -sSf --connect-timeout 3 --max-time 5 "https://$host" >/dev/null 2>&1; then
+          echo "[OK] curl -6 $host succeeded"
+        else
+          # If TCP ping succeeded but curl failed, it's likely a DNS issue
+          echo "[WARN] curl -6 $host failed (exit=$?) - IPv6 DNS may not be available, but TCP ping succeeded"
+        fi
       fi
     fi
     echo
