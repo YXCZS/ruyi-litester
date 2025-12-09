@@ -2,6 +2,11 @@
 
 set -euo pipefail
 
+# Use /var/tmp for temporary files to avoid /tmp no-space issues (e.g. on tmpfs)
+TMPDIR=${TMPDIR:-/var/tmp/ruyi-litester-tmp}
+export TMPDIR
+mkdir -p "$TMPDIR"
+
 debug_env() {
   echo "================ ENV DEBUG BEGIN ================"
   echo "[DEBUG] date: $(date || echo 'date failed')"
