@@ -146,25 +146,38 @@ debug_env() {
     # Test IPv6 with curl
     if command -v curl >/dev/null 2>&1; then
       echo "[DEBUG] curl -6 $host"
-      # Try to resolve IPv6 address first
-      ipv6_addr=""
-      if command -v getent >/dev/null 2>&1; then
-        ipv6_addr=$(getent aaaa "$host" 2>/dev/null | head -n1 | awk '{print $1}') || true
-      elif command -v host >/dev/null 2>&1; then
-        ipv6_addr=$(host -t AAAA "$host" 2>/dev/null | grep "has IPv6 address" | awk '{print $NF}') || true
-      fi
-      
-      if [ -n "$ipv6_addr" ]; then
-        # Use IPv6 address directly
-        if curl -6 -sSf --connect-timeout 3 --max-time 5 "https://[$ipv6_addr]" >/dev/null 2>&1; then
-          echo "[OK] curl -6 $host succeeded (via $ipv6_addr)"
-        else
-          echo "[WARN] curl -6 $host failed (exit=$?)"
-        fi
+      # Try with hostname first
+      if curl -6 -sSf --connect-timeout 3 --max-time 5 "https://$host" >/dev/null 2>&1; then
+        echo "[OK] curl -6 $host succeeded"
       else
-        # Try with hostname (may fail if IPv6 DNS is not available)
-        if curl -6 -sSf --connect-timeout 3 --max-time 5 "https://$host" >/dev/null 2>&1; then
-          echo "[OK] curl -6 $host succeeded"
+        # If failed, try to resolve IPv6 address and use IP directly
+        ipv6_addr=""
+        if command -v getent >/dev/null 2>&1; then
+          # getent aaaa returns: hostname IPv6_address
+          ipv6_line=$(getent aaaa "$host" 2>/dev/null | head -n1) || true
+          if [ -n "$ipv6_line" ]; then
+            # Extract IPv6 address (second field)
+            ipv6_addr=$(echo "$ipv6_line" | cut -d' ' -f2) || true
+          fi
+        elif command -v host >/dev/null 2>&1 && command -v grep >/dev/null 2>&1; then
+          # host returns: hostname has IPv6 address IPv6_address
+          ipv6_line=$(host -t AAAA "$host" 2>/dev/null | grep "has IPv6 address") || true
+          if [ -n "$ipv6_line" ]; then
+            # Extract IPv6 address (last field, using space as delimiter)
+            # Use a simple while loop to get last field
+            for word in $ipv6_line; do
+              ipv6_addr="$word"
+            done
+          fi
+        fi
+        
+        if [ -n "$ipv6_addr" ]; then
+          # Try with IPv6 address directly
+          if curl -6 -sSf --connect-timeout 3 --max-time 5 "https://[$ipv6_addr]" >/dev/null 2>&1; then
+            echo "[OK] curl -6 $host succeeded (via $ipv6_addr)"
+          else
+            echo "[WARN] curl -6 $host failed (exit=$?)"
+          fi
         else
           # If TCP ping succeeded but curl failed, it's likely a DNS issue
           echo "[WARN] curl -6 $host failed (exit=$?) - IPv6 DNS may not be available, but TCP ping succeeded"
