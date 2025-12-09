@@ -2,26 +2,6 @@
 
 set -euo pipefail
 
-# Use /var/tmp for temporary files to avoid /tmp no-space issues (e.g. on tmpfs)
-TMPDIR=${TMPDIR:-/var/tmp/ruyi-litester-tmp}
-export TMPDIR
-mkdir -p "$TMPDIR"
-
-free_space() {
-  echo "---- disk usage before cleanup ----"
-  df -h /
-
-  # Only clean logs to reclaim some space, leave SDKs/caches intact
-  sudo rm -rf /home/runner/actions-runner/_diag/*.log || true
-  sudo rm -rf /home/runner/work/_temp || true
-  mkdir -p "$TMPDIR"
-
-  echo "---- disk usage after cleanup ----"
-  df -h /
-}
-
-free_space
-
 debug_env() {
   echo "================ ENV DEBUG BEGIN ================"
   echo "[DEBUG] date: $(date || echo 'date failed')"
@@ -91,118 +71,46 @@ debug_env() {
 
   echo
   echo "---- network ----"
-  # TCP ping function using netcat or bash /dev/tcp
   tcp_ping() {
     local host=$1
     local port=$2
-    local ip_version=$3  # 4 for IPv4, 6 for IPv6
+    local ip_version=$3  # 4 or 6
     local timeout=${4:-3}
-    
-    # Try netcat first
+
     if command -v nc >/dev/null 2>&1; then
       local nc_output
       if [ "$ip_version" = "6" ]; then
-        if command -v timeout >/dev/null 2>&1; then
-          nc_output=$(timeout "$timeout" nc -6 -zv -w "$timeout" "$host" "$port" 2>&1) || true
-        else
-          nc_output=$(nc -6 -zv -w "$timeout" "$host" "$port" 2>&1) || true
-        fi
+        nc_output=$(timeout "$timeout" nc -6 -zv -w "$timeout" "$host" "$port" 2>&1) || true
       else
-        if command -v timeout >/dev/null 2>&1; then
-          nc_output=$(timeout "$timeout" nc -4 -zv -w "$timeout" "$host" "$port" 2>&1) || true
-        else
-          nc_output=$(nc -4 -zv -w "$timeout" "$host" "$port" 2>&1) || true
-        fi
+        nc_output=$(timeout "$timeout" nc -4 -zv -w "$timeout" "$host" "$port" 2>&1) || true
       fi
       if echo "$nc_output" | grep -q "succeeded\|open"; then
         return 0
       fi
     fi
-    
-    # Fallback to bash /dev/tcp (works in bash)
-    # Note: bash /dev/tcp uses DNS resolution, so we can't force IPv4/IPv6 directly
+
+    # fallback /dev/tcp (cannot force v4/v6; best effort)
     if [ -n "${BASH_VERSION:-}" ]; then
-      if command -v timeout >/dev/null 2>&1; then
-        if timeout "$timeout" bash -c "echo > /dev/tcp/$host/$port" 2>/dev/null; then
-          return 0
-        fi
-      else
-        if bash -c "echo > /dev/tcp/$host/$port" 2>/dev/null; then
-          return 0
-        fi
+      if timeout "$timeout" bash -c "echo > /dev/tcp/$host/$port" 2>/dev/null; then
+        return 0
       fi
     fi
-    
     return 1
   }
-  
+
   for host in github.com wps.com; do
-    # Test IPv4 with TCP ping (port 443)
     echo "[DEBUG] TCP ping -4 $host:443"
     if tcp_ping "$host" 443 4; then
       echo "[OK] TCP ping -4 $host:443 succeeded"
     else
       echo "[WARN] TCP ping -4 $host:443 failed (exit=$?)"
     fi
-    
-    # Test IPv6 with TCP ping (port 443)
+
     echo "[DEBUG] TCP ping -6 $host:443"
     if tcp_ping "$host" 443 6; then
       echo "[OK] TCP ping -6 $host:443 succeeded"
     else
       echo "[WARN] TCP ping -6 $host:443 failed (exit=$?)"
-    fi
-    
-    # Test IPv4 with curl
-    if command -v curl >/dev/null 2>&1; then
-      echo "[DEBUG] curl -4 $host"
-      if curl -4 -sSf --connect-timeout 3 --max-time 5 "https://$host" >/dev/null 2>&1; then
-        echo "[OK] curl -4 $host succeeded"
-      else
-        echo "[WARN] curl -4 $host failed (exit=$?)"
-      fi
-    fi
-    
-    # Test IPv6 with curl
-    if command -v curl >/dev/null 2>&1; then
-      echo "[DEBUG] curl -6 $host"
-      # Try with hostname first
-      if curl -6 -sSf --connect-timeout 3 --max-time 5 "https://$host" >/dev/null 2>&1; then
-        echo "[OK] curl -6 $host succeeded"
-      else
-        # If failed, try to resolve IPv6 address and use IP directly
-        ipv6_addr=""
-        if command -v getent >/dev/null 2>&1; then
-          # getent aaaa returns: hostname IPv6_address
-          ipv6_line=$(getent aaaa "$host" 2>/dev/null | head -n1) || true
-          if [ -n "$ipv6_line" ]; then
-            # Extract IPv6 address (second field)
-            ipv6_addr=$(echo "$ipv6_line" | cut -d' ' -f2) || true
-          fi
-        elif command -v host >/dev/null 2>&1 && command -v grep >/dev/null 2>&1; then
-          # host returns: hostname has IPv6 address IPv6_address
-          ipv6_line=$(host -t AAAA "$host" 2>/dev/null | grep "has IPv6 address") || true
-          if [ -n "$ipv6_line" ]; then
-            # Extract IPv6 address (last field, using space as delimiter)
-            # Use a simple while loop to get last field
-            for word in $ipv6_line; do
-              ipv6_addr="$word"
-            done
-          fi
-        fi
-        
-        if [ -n "$ipv6_addr" ]; then
-          # Try with IPv6 address directly
-          if curl -6 -sSf --connect-timeout 3 --max-time 5 "https://[$ipv6_addr]" >/dev/null 2>&1; then
-            echo "[OK] curl -6 $host succeeded (via $ipv6_addr)"
-          else
-            echo "[WARN] curl -6 $host failed (exit=$?)"
-          fi
-        else
-          # If TCP ping succeeded but curl failed, it's likely a DNS issue
-          echo "[WARN] curl -6 $host failed (exit=$?) - IPv6 DNS may not be available, but TCP ping succeeded"
-        fi
-      fi
     fi
     echo
   done
