@@ -79,7 +79,7 @@ jobs:
 
       - name: Build test image for ${{ matrix.distro }}
         run: |
-          docker build \
+          docker build --no-cache \
           -f docker/distros/${{ matrix.distro }}.Dockerfile \
             -t ruyi-litester:${{ matrix.distro }} .
 
