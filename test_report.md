@@ -9,4 +9,4 @@
 - 在github actions中测试成功[测试情况](https://github.com/YXCZS/ruyi-litester/actions) 
 <img width="1208" height="224" alt="image" src="https://github.com/user-attachments/assets/483826b1-0af1-42b6-b533-4680c0f29cc4" />
 
-@weilinfox 请mentor审阅。
+请mentor@weilinfox审阅。
