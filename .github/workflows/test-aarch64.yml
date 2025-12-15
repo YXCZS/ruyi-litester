@@ -14,11 +14,11 @@ on:
 
 jobs:
   litester-aarch64:
-    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
+        arch: [ ubuntu-24.04-arm ]
         distro:
           - debian_bookworm
           - debian_trixie
@@ -39,16 +39,8 @@ jobs:
     env:
       RUYI_VERSION: ${{ inputs.ruyi_version }}
       TEST_START_TIME: ${{ inputs.test_start_time }}
-
+    runs-on: ${{ matrix.arch }}
     steps:
-      - name: Set up QEMU for multi-arch
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Checkout ruyi-litester
         uses: actions/checkout@v4
 
@@ -77,19 +69,16 @@ jobs:
 
       - name: Build aarch64 test image for ${{ matrix.distro }}
         run: |
-          docker buildx build \
-            --platform linux/arm64 \
+          docker build \
             --build-arg ARCH=arm64 \
             -f docker/distros/${{ matrix.distro }}.Dockerfile \
             -t ruyi-litester:${{ matrix.distro }}-arm64 \
-            --load \
             .
 
       - name: Run litester in Docker (${{ matrix.distro }} aarch64)
         run: |
           mkdir -p artifacts/${{ matrix.distro }}-arm64
           docker run --rm \
-            --platform linux/arm64 \
             -e RUYI_VERSION \
             -e TEST_START_TIME \
             -e DISTRO_ID=${{ matrix.distro }}-arm64 \
@@ -102,4 +91,5 @@ jobs:
           name: ruyi-litester-${{ matrix.distro }}-arm64
           path: artifacts/${{ matrix.distro }}-arm64
           if-no-files-found: error
+
 
