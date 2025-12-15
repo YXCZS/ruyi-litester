@@ -14,7 +14,7 @@ on:
 
 jobs:
   litester-aarch64:
-
+    runs-on: ${{ matrix.arch }}
     strategy:
       fail-fast: false
       matrix:
@@ -39,7 +39,7 @@ jobs:
     env:
       RUYI_VERSION: ${{ inputs.ruyi_version }}
       TEST_START_TIME: ${{ inputs.test_start_time }}
-    runs-on: ${{ matrix.arch }}
+
     steps:
       - name: Checkout ruyi-litester
         uses: actions/checkout@v4
