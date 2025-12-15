@@ -14,11 +14,11 @@ on:
 
 jobs:
   litester-aarch64:
-    runs-on: ${{ matrix.arch }}
+    runs-on: ubuntu-24.04-arm64
+
     strategy:
       fail-fast: false
       matrix:
-        arch: [ ubuntu-24.04-arm64 ]
         distro:
           - debian_bookworm
           - debian_trixie
@@ -91,5 +91,3 @@ jobs:
           name: ruyi-litester-${{ matrix.distro }}-arm64
           path: artifacts/${{ matrix.distro }}-arm64
           if-no-files-found: error
-
-
