@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [ ubuntu-24.04-arm ]
+        arch: [ ubuntu-24.04-arm64 ]
         distro:
           - debian_bookworm
           - debian_trixie
