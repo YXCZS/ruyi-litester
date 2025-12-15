@@ -70,6 +70,7 @@ jobs:
       - name: Build aarch64 test image for ${{ matrix.distro }}
         run: |
           docker build \
+            --platform linux/arm64 \
             --build-arg ARCH=arm64 \
             -f docker/distros/${{ matrix.distro }}.Dockerfile \
             -t ruyi-litester:${{ matrix.distro }}-arm64 \
@@ -79,6 +80,7 @@ jobs:
         run: |
           mkdir -p artifacts/${{ matrix.distro }}-arm64
           docker run --rm \
+            --platform linux/arm64 \
             -e RUYI_VERSION \
             -e TEST_START_TIME \
             -e DISTRO_ID=${{ matrix.distro }}-arm64 \
