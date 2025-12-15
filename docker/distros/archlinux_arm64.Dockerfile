@@ -1,5 +1,5 @@
 # Use Arch Linux ARM official image to avoid pulling amd64 on ARM runners
-FROM archlinuxarm/archlinux:latest AS builder
+FROM ghcr.io/archlinux/archlinux:base AS builder
 WORKDIR /ruyi-litester
 
 # Use upstream multi-arch image; platform is selected by the workflow --platform flag
